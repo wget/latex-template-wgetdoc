@@ -225,13 +225,22 @@
                 \HRule \\*[0.4cm]
                 % We always need to define \par in scope for a font size change, otherwise, if the title is ever longer than a line, it will wrap to the next line with huge characters on a normal baseline.
                 {\Huge\textbf{#1}\par}\vspace{.4cm}
-                \HRule \\*[1.5cm]
-                \Large #2
-                \vfill
-                \emph{Author:} #3
+                \HRule
+                \ifx#2\@empty
+                \else
+                    \\*[1.5cm]
+                    \Large #2
+                    \vfill
+                \fi
+
+                \ifx#3\@empty
+                \else
+                    \emph{Author:} #3
+                \fi
             \end{center}
         \end{titlepage}
     }
+
 }
 
 % Used to count the number of page.
