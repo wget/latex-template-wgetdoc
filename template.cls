@@ -223,7 +223,8 @@
             \begin{center}
                 \newcommand{\HRule}{\rule{\linewidth}{1mm}}
                 \HRule \\*[0.4cm]
-                \textbf{\Huge #1\\[0.4cm]}
+                % We always need to define \par in scope for a font size change, otherwise, if the title is ever longer than a line, it will wrap to the next line with huge characters on a normal baseline.
+                {\Huge\textbf{#1}\par}\vspace{.4cm}
                 \HRule \\*[1.5cm]
                 \Large #2
                 \vfill
