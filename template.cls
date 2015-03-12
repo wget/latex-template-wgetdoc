@@ -153,9 +153,6 @@
 
 % Define a style for the title page
 \fancypagestyle{titlepagestyle}{
-    \fancyhf{}
-    % Remove top line
-    \renewcommand{\headrulewidth}{0pt}
     \rfoot{Page \thepage\ de \pageref{lastPage}}
 }
 
