@@ -229,13 +229,13 @@
                 \ifx#2\@empty
                 \else
                     \vspace{1.5cm}
-                    \Large #2
+                    {\Large{#2}\par}
                     \vfill
                 \fi
 
                 \ifx#3\@empty
                 \else
-                    \emph{Author:} #3
+                    {\emph{Author: #3}\par}
                 \fi
             \end{center}
         \end{titlepage}
