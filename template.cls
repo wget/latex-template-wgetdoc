@@ -218,28 +218,50 @@
     \renewcommand{\labelitemi}{\textbullet}
 
     % Redefine the title commmand
-    \renewcommand{\title}[3]{
+
+    % makeatletter and makeatother are unneeded in class files.
+    %\makeatletter
+
+    % Restrict the commands to the internals of this class file.
+    \def\@maintitle{}
+    \def\@subtitle{}
+    \def\@author{}
+
+    \define@key{title}{maintitle}{%
+        \def\@maintitle{%
+            \hrule%
+            \vspace{0.4cm}
+            % We always need to define \par in scope for a font size change, otherwise, if the title is ever longer than a line, it will wrap to the next line with huge characters on a normal baseline.
+            {\Huge\textbf{#1}\par}%
+            \vspace{0.4cm}%
+            \hrule
+        }%
+    }
+    \define@key{title}{subtitle}{%
+        \def\@subtitle{%
+            \vspace{1.5cm}
+            {\Large{#1}\par}%
+            \vfill%
+        }%
+    }
+    \define@key{title}{author}{%
+        \def\@author{%
+            {\emph{Author: #1}\par}%
+        }%
+    }
+
+    % The outer bracket is the renewcommand syntax, the inner one is a group definition avoiding \@author to leak out and be the default in later uses.
+    \renewcommand{\title}[2][]{{%
+        \setkeys{title}{#1}
         \begin{titlepage}
             \begin{center}
-                \newcommand{\HRule}{\rule{\linewidth}{1mm}}
-                \HRule\vspace{0.4cm}
-                % We always need to define \par in scope for a font size change, otherwise, if the title is ever longer than a line, it will wrap to the next line with huge characters on a normal baseline.
-                {\Huge\textbf{#1}\par}\vspace{.4cm}
-                \HRule
-                \ifx#2\@empty
-                \else
-                    \vspace{1.5cm}
-                    {\Large{#2}\par}
-                    \vfill
-                \fi
-
-                \ifx#3\@empty
-                \else
-                    {\emph{Author: #3}\par}
-                \fi
+                \renewcommand{\hrule}{\rule{\linewidth}{1mm}}
+                \@maintitle
+                \@subtitle
+                \@author
             \end{center}
-        \end{titlepage}
-    }
+        \end{titlepage}%
+    }}
 
 }
 
