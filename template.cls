@@ -241,7 +241,6 @@
         \def\@subtitle{%
             \vspace{1.5cm}
             {\Large{#1}\par}%
-            \vfill%
         }%
     }
     \define@key{title}{author}{%
@@ -258,6 +257,7 @@
                 \renewcommand{\hrule}{\rule{\linewidth}{1mm}}
                 \@maintitle
                 \@subtitle
+                \vfill%
                 \@author
             \end{center}
         \end{titlepage}%
