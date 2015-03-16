@@ -186,6 +186,8 @@
 % Add the ability to have tables. Compared to tabular, tabu has a new column specifier like X (in uppercase) which streches columns to make the table as wide as specified, greatly simplifying the creation of tables. tabu is a rewrite merging and extending features from tabularx and longtable. The latter still needs to be sourced first though.
 \RequirePackage{longtable}
 \RequirePackage{tabu}
+% Add extra space for proper alignement between table rows
+\tabulinesep = 3pt
 
 % The "to \textwidth" expression is similar to the first argument passed to tabularx environment. However, in this case, according to the tabu manual, it should speed up the algorithm convergence.
 \newenvironment{keyvalue}
