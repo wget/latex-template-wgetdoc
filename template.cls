@@ -208,6 +208,13 @@
 % Add the ability to insert a figure at the exact location in the LaTeX code.
 \RequirePackage{float}
 
+% Allow to adjust via boxes and add options to the \includegraphics command. The export parameter exports most keys of \adjustbox to \includegraphics. Cannot be included below menukeys, otherwise, the compilation fails.
+\RequirePackage[export]{adjustbox}
+\newcommand\icon[1]{%
+    % The 2 argument to \fontdimen defines the standard width of the interword space
+    \adjustbox{valign=m}{\includegraphics[height=\dimexpr\fontdimen2\textfont2+1em\relax]{#1}}
+}
+
 % Add support for special keystrokes and paths.
 \RequirePackage{menukeys}
 
