@@ -211,8 +211,8 @@
 % Allow to adjust via boxes and add options to the \includegraphics command. The export parameter exports most keys of \adjustbox to \includegraphics. Cannot be included below menukeys, otherwise, the compilation fails.
 \RequirePackage[export]{adjustbox}
 \newcommand\icon[1]{%
-    % The 2 argument to \fontdimen defines the standard width of the interword space
-    \adjustbox{valign=m}{\includegraphics[height=\dimexpr\fontdimen2\textfont2+1em\relax]{#1}}
+    % \fontcharht calculates the height of the font letter defined with the \font command. That command is followed by the character, prefixed by a quote escape sequence, whose height will be computed. Change X to any other letter to change the height. \fontcharht comes from eTeX, but the XeTeX engine understands it. valign is an option from adjustbox to align to the bottom of the line keeping the line height in mind.
+    \includegraphics[valign=b,height=\fontcharht\font`X]{#1}
 }
 
 % Add support for special keystrokes and paths.
