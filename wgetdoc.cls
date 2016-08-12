@@ -1,6 +1,10 @@
-% !TXS template
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{template}[2014/10/22 Wget's default template document class]
+% !TEX encoding = UTF-8
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+% The date is mandatory next to our own class title, otherwise we get the
+% following error message:
+%! Missing number, treated as zero.
+\ProvidesClass{wgetdoc}[2016/08/15 William Gathoye's document class]
+
 %-------------------------------------------------------------------------------
 % This document needs to be compiled with xelatex or lualatex. In this regard,
 % all UTF-8 packages emulation have been removed.
