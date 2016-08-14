@@ -41,7 +41,7 @@
 %-------------------------------------------------------------------------------
 
 %-------------------------------------------------------------------------------
-% SEC: Template and options
+%SEC: Template and options
 %-------------------------------------------------------------------------------
 \LoadClass[twoside]{report}
 
@@ -51,17 +51,17 @@
 % called once at the very beginning of your LaTeX document. Book does provide
 % single sided and double sided page options.
 
-% Allow to have optional named arguments with a key=value style and removes the
-% limit of 9 args.
-% Key values like author=\textit{Me} used as options passed to classes are not
-% allowed by the LaTeX default kernel. The expression \textit{Me} will not be
-% processed. To allow such a syntax, xkeyval includes xkvltxp. Loading this
-% package before loading the class or package which uses xkeyval for option
-% processing will allow class and package options to contain expandable macros.
-\RequirePackage{xkeyval}
+% Add the ability to compare macros with string values. The package is reported
+% to be weak and deprecated, while it appears to be maintained. etoolbox is
+% considered far superior and supersedes ifthen.
+%\RequirePackage{ifthen}
+% ifmtarg could be useful to detect if strings are empty without the burden
+% etoolbox requires.
+%\RequirePackage{ifmtarg}
+\RequirePackage{etoolbox}
 
 %-------------------------------------------------------------------------------
-% SEC: Languages and translations
+%SEC: Languages and translations
 %-------------------------------------------------------------------------------
 % Default French is frenchb, francais is Parisian French.
 %\RequirePackage[frenchb]{babel}
@@ -606,6 +606,25 @@
 % For redefinition of label items in unordered lists. Needs the fontspec package
 % to be loaded with the no-math option.
 \RequirePackage{MnSymbol}
+
+% For Physics and Mathematics symbols (electricity for currents for example).
+\RequirePackage{wasysym}
+
+% Symbol for direct current
+% src.: http://tex.stackexchange.com/a/40628/66964
+\newcommand{\DC}{%
+    \settowidth{\dimen0}{$=$}%
+    \vbox to .85ex {\offinterlineskip
+        \hbox to \dimen0{\leaders\hrule\hfill}
+        \vskip.35ex
+        \hbox to \dimen0{%
+            \leaders\hrule\hskip.2\dimen0\hfill
+            \leaders\hrule\hskip.2\dimen0\hfill
+            \leaders\hrule\hskip.2\dimen0
+        }
+        \vfill
+    }%
+}
 
 % Used to implement TeX related logos.
 % doesn't work since a recent update
