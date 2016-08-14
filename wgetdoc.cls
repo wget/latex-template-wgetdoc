@@ -43,6 +43,57 @@
 %-------------------------------------------------------------------------------
 %SEC: Template and options
 %-------------------------------------------------------------------------------
+% Needed to detect the TeX engine used. To have a generic code working for all
+% engines.
+\RequirePackage{iftex}
+
+\RequirePackage{xkeyval}
+\newif\iflanguagesdefined
+\DeclareOptionX{languages}[english]{
+    \PassOptionsToPackage{#1}{babel}
+    \iflanguagedefined
+        \ClassError{wgetdoc}{A language has already been defined with the singular 'language' argument keyword}
+    \fi
+    \languagesdefinedtrue    
+}
+
+\newif\iflanguagedefined
+\DeclareOptionX{language}[english]{
+    \PassOptionsToPackage{#1}{babel}
+    \iflanguagesdefined
+        \ClassError{wgetdoc}{Languages have already been defined with the plural 'languages' argument keyword}
+    \fi
+    \languagedefinedtrue
+}
+
+% Catchall class option. \OptionNotUsed exists to add the option to the list of
+% not used options. If not present, class options will be passed to all package
+% options. It is the version for xkeyval, the one for the LaTeX kernel is
+% \DeclareOption*
+\DeclareOptionX*{
+    \ClassWarning{wgetdoc}{Unknown option ‘\CurrentOption’. Discarded.}%
+}
+
+% Set the keyval keys. This is the equivalent of \setkeys but for class and package
+% options.
+%\ExecuteOptionsX{languages}
+
+
+
+% for xkeyval
+\ProcessOptionsX
+%for standard latex
+%\processoptions
+
+
+% \DeclareOptions and \ProcessOptions are defined in the LaTeX kernel itself.
+% These have no ability to define a default value.
+% xkeyval is bugy when a key has several values surrounded by { }.
+% \documentclass[languages={english, french}, onepage]{wgetdoc}
+% would have be impossible
+% keyval is great but does not offer a simple default value in \DeclareOptions,
+% has no ability to have a catch all feature for invalid options.
+%
 \LoadClass[twoside]{report}
 
 % As a reminder: the only difference between article and report is that article
@@ -63,10 +114,15 @@
 %-------------------------------------------------------------------------------
 %SEC: Languages and translations
 %-------------------------------------------------------------------------------
-% Default French is frenchb, francais is Parisian French.
-%\RequirePackage[frenchb]{babel}
-% Does make dashes in lists too big.
-\RequirePackage[french, german]{babel}
+% Require to have a package option loaded, otherwise complains with:
+% ! Package babel Error: You haven't specified a language option.
+% If we do not want to specify a language, the [base] option is the minimum required, but [base] does not load most of babel parts. We are not even able to check which languages have been loaded for example.
+\@ifundefined{@wgetdoc@options@languages}{
+    \ClassWarning{wgetdoc}{No main language specified. Defining English}
+    \RequirePackage[english]{babel}
+}{
+    \RequirePackage{babel}
+}
 
 % Used to detect the language used in our custom listing environments and in our footers to disable shorthands/autospacing accordingly. Cannot rely on \iflanguage by babel.
 \RequirePackage{iflang}
