@@ -15,6 +15,29 @@
 % $ xelatex <your tex filename>
 % $ <your pdf reader> <your tex filename.pdf>
 % You can use lualatex instead of xetex
+
+% If the compilation complains dependencies are not met, use the following
+% command to install the missing deps.
+% tlmgr search --global --file <name of file>
+%-------------------------------------------------------------------------------
+
+% Install extra/ttf-arphic-umin
+% tlmgr install mnsymbol
+% does not work with lualatex yet, because of japanese fonts.
+
+%-------------------------------------------------------------------------------
+% Always use \LoadClass and \RequirePackage instead of \input. If a package is
+% loaded with \input then it can be loaded more than once. Such an extra loading
+% may waste time and memory and it may produce strange results.
+
+% The @ symbol is used to namespace the commands and prevent them from being
+% used in a regular environment. As we are in our own class file, this is like
+% as we had an implicit \makeatletter
+% src.: http://tex.stackexchange.com/q/6240/66964
+% makeatletter and makeatother are thus unneeded in class files.
+
+% Use LaTeX commands as much as possible as their are more robust than their
+% TeX counterparts.
 %-------------------------------------------------------------------------------
 
 %-------------------------------------------------------------------------------
