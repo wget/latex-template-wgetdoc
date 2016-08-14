@@ -561,104 +561,138 @@
 }
 \pagestyle{plain}
 
-
-
 %-------------------------------------------------------------------------------
 % SEC: Pagetitle and title
 %-------------------------------------------------------------------------------
-% makeatletter and makeatother are unneeded in class files.
-%\makeatletter
- 
-% Restrict the commands to the internals of this class file. If abstent,
-% compilation complains with "undefined control sequence".
-\def\@maintitle{}
-\def\@subtitle{}
-\def\@authorlong{}
-\def\@filename{}
 
+% If we use setkeys to define the keys from the argument of our environement,
+% and we call the defined keys at the exact location we need them, the function
+% linked to the key will be actually executed 2 times: at definition with
+% setkeys and when we call them. To prevent that, a solution is to define a
+% command that will contain the function of our key. By default, that command
+% will thus not be executed. We just need to call that command when we need
+% them.
+% This is what we do here. We define commands like \@wgetdoc@title@maintitle
+% that we need to call manually to execute their content.
 \define@key{title}{maintitle}{%
-    \def\@maintitle{%
-        \hrule%
-        \vspace{0.4cm}
-        % We always need to define \par in scope for a font size change,
-        % otherwise, if the title is ever longer than a line, it will wrap to
-        % the next line with huge characters on a normal baseline.
-        {\Huge\textbf{#1}\par}%
-        \vspace{0.4cm}%
-        \hrule
-    }%
+    \def\@wgetdoc@title@maintitle{#1}%
 }
+
 \define@key{title}{subtitle}{%
-    \def\@subtitle{%
-        \vspace{1.5cm}
-        {\Large{#1}\par}%
-    }%
+    \def\@wgetdoc@title@subtitle{#1}%
 }
+
 \define@key{title}{author}{%
-    \def\@author{%
-        {\emph{Author: #1}\par}%
-    }%
+    \def\@wgetdoc@title@author{#1}%
 }
-\define@key{title}{externalfile}{%
-    \def\@filename{#1}%
-}
-\define@key{title}{page}{%
-    \def\@filename{#1}%
-}
-\define@boolkey{title}{ownpage}[false]{}
 
-\renewcommand{\title}[1][]{{%
+\define@key{title}{filename}{%
+   \def\@wgetdoc@title@filename{#1}%
+}
+
+\define@boolkey{title}{ownpage}[true]{}
+
+\renewcommand{\title}[1][]{%
+
+    % Define the first argument of the command to be parsed as keys. There isn't
+    % any filtering restriction here wrt. the prefix and the family: all keys
+    % are thus taken into account. When the \setkeys command has a key=value as
+    % argument, the macro \prefix@family@keyName is defined, the value is
+    % assigned and the function is executed.
     \setkeys{title}{#1}
+    
+    \@ifundefined{@wgetdoc@title@filename}{
 
-    % If this boolean key is absent of the title command, this will return
-    % false. If it is only present, it will return false too. To return true,
-    % the boolean value needs to be explicitely set explicitely on true. Any
-    % value other than 'true' or 'false' is non accepted and will make the
-    % compilation crash.
-    \ifKV@title@ownpage%
-        \typeout{hello world: true}%
-    \else%
-        \typeout{hello world: false}%
-    \fi%
-    
-%    \ifKV@title@ownpage%
-%    \typeout{hello world: true}%
-%    \else%
-%    \typeout{hello world: false}%
-%    \fi%
-%    
-%    For warning, use  \ClassWarning{myclass}{Unknown option '\CurrentOption'} src: https://en.wikibooks.org/wiki/LaTeX/Creating_Packages
+        \@ifundefined{@wgetdoc@title@maintitle}{
+            \ClassError{wgetdoc}{You did not specify a main title}{}
+        }{}
 
-    
-    
-    % As we are defining the condition first, if it exists, the external file
-    % supersedes the title we defined in the maintitle command, no matter what
-    % the property is set at the beginning or at the end of our title command.
-    % If the file does not exist, the title command fallbacks to the maintitle
-    % and subtitle we defined. However, if we specified the parameter
-    % externalFile and that value does not exist, and if we don't have
-    % specified a maintitle nor a subsitle, the title page is still created
-    % (resulting in an empty page to be displayed) and we don't have made
-    % conditions to check if the title property really exists and are not empty
-    % before creating the page.
-    \IfFileExists{\@filename}{%
-        \includepdf[pages={1}]{\@filename}%
-    }%
-    {%
-        \begin{titlepage}
+        % Do not use the following check. This macro allows just checking if a
+        % key is defined in a family from a list of families.
+        %\key@ifundefined{title}{maintitle}{NOT DEFINED}{DEFINED}
+
+        \@ifundefined{@wgetdoc@title@maintitle}{
+            \ClassError{wgetdoc}{You did not specify a main title}{}
+        }{}
+
+        % Not needed as xkeyval checks if an equal sign is present (=). If absent 
+        % it complains with
+        %! Package xkeyval Error: no value specified for key `maintitle'.
+        %\ifdefempty{\@wget@title@maintitle}{EMPTY}{NOT EMPTY}
+
+        % Check if maintitle is empty as it: maintitle=,subtitle=lorem
+        % or maintitle={},subtitle=lorem
+        % No need to chek further as xkeyval is stripping white spaces and
+        % checks performed either by \ifblank (etoolbox) or
+        % \@ifmtarg (ifmtarg) are lost
+        \ifx\@wgetdoc@title@maintitle\@empty
+            \ClassError{wgetdoc}{The main title you specified is empty}{}
+        \fi
+
+        % Custom horizontale rule only local to this environment
+        \newcommand{\@wgetdoc@title@hrule}{\rule{\linewidth}{1mm}}
+
+        % If this boolean key is absent of the title command, this will return
+        % false. If it is only present, it will return false too. To return true,
+        % the boolean value needs to be explicitely set explicitely on true. Any
+        % value other than 'true' or 'false' is non accepted and will make the
+        % compilation crash.
+        \ifKV@title@ownpage%
+            \begin{titlepage}
+                \begin{center}
+
+                    \@wgetdoc@title@hrule%
+                    \vspace{0.4cm}
+
+                    % We always need to define \par in scope for a font size
+                    % change, otherwise, if the title is ever longer than a
+                    % line, it will wrap to the next line with huge characters
+                    % on a normal baseline.
+                    {\Huge\textbf{\@wgetdoc@title@maintitle}\par}%
+
+                    \vspace{0.4cm}%
+                    \@wgetdoc@title@hrule
+
+                    \@ifundefined{@wgetdoc@title@subtitle}{}{
+                        \vspace{1.5cm}
+                        {\Large{\@wgetdoc@title@subtitle}\par}%
+                    }
+
+                    \@ifundefined{@wgetdoc@title@author}{}{
+                        % Adds vertical space which will not be suppressed at the
+                        % beginning or end of a page. Text following that statement
+                        % will be at the bottom of the page.
+                        \vspace*{\fill}
+                        {\emph{\GetTranslation{author}: \@wgetdoc@title@author}\par}%
+                    }
+
+                \end{center}
+            \end{titlepage}%
+        \else
             \begin{center}
-                \renewcommand{\hrule}{\rule{\linewidth}{1mm}}
-                \@maintitle
-                \@subtitle
-                \vfill%
-                \@authorlong
+                {\huge\textbf{\@wgetdoc@title@maintitle}\par}
+                \@ifundefined{@wgetdoc@title@subtitle}{}{
+                    {\large{\@wgetdoc@title@subtitle}\par}%
+                }
             \end{center}
-        \end{titlepage}%
+            \@ifundefined{@wgetdoc@title@author}{}{
+                {\emph{\GetTranslation{author}: \@wgetdoc@title@author}\par}%
+            }
+            \@wgetdoc@title@hrule%
+        \fi
+
+    % If a filename has been defined for te title page and the file exists,
+    % the file will be used as title page and others arguments in the \title
+    % command will be discarded.
+    }{
+        \IfFileExists{\@wgetdoc@title@filename}{%
+            \includepdf[pages={1}]{\@wgetdoc@title@filename}%
+            \ClassInfo{wgetdoc}{\@wgetdoc@title@filename has been used as title page. Any other argument have been discarded.}{}
+        }{%
+            \ClassError{wgetdoc}{You specified \@wgetdoc@title@filename as filename for the page title, but it could not be found.}{}
+        }
     }
-}}
-    
-% Define a variable restricted to this template scope
-\newcommand{\footerRight}{}
+}
 
 %-------------------------------------------------------------------------------
 % SEC: Links management
