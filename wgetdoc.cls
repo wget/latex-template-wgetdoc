@@ -174,15 +174,26 @@
 %%shrink=10]{microtype}
 
 % Margins and page paddings
-\RequirePackage[margin=2.5cm]{geometry}
+\ifXeTeX
+    \RequirePackage[driver=xetex,margin=2.5cm]{geometry}
+\else\ifPDFTeX
+    \RequirePackage[driver=pdftex,margin=2.5cm]{geometry}
+\else
+    \RequirePackage[driver=dvips,margin=2.5cm]{geometry}
+% Pay attention at the double closing if. This is needed as we use nested if statements.
+% src.: http://tex.stackexchange.com/a/20780/66964
+\fi\fi
 % Recommended for double sided
 %\RequirePackage[top=2.5cm, bottom=2.5cm, left=4cm, right=2cm]{geometry}
 % Recommended for single sided
 %\RequirePackage[top=2.2cm, bottom=2.2cm, left=2cm, right=2cm]{geometry}
 
-% The default line spacing factor is 1. 1.3 which corresponds to one and a half
-% line spacing; specify a bit less.
-\linespread{1.2}
+% The default line spacing factor is 1. 1.3 which corresponds to \onehalfspacing with setspace.
+% like the \linespread command, linespace is still applied on the whole document, except footnotes and captions. setspace is now a native package as of LaTeX 2e and allows more fine-grained control over line spacing thanks to dedicated environments. We still need to apply a rule to all our listings environment as linespacing is still applied on them.
+% src.: https://en.wikibooks.org/wiki/LaTeX/Text_Formatting#Line_Spacing
+%       http://tex.stackexchange.com/a/200215/66964
+\RequirePackage{setspace}
+\onehalfspacing
 
 % Do not ask to adapt paragraph vertical spaces to make all page content of the
 % same hight.
@@ -191,7 +202,7 @@
 % Disable the default alineas and add a space between all paragraphs.
 % Note 1: Do not try to change the values of \parskip and \parindent using
 % \setlength{} because this will change the table of contents and footnotes
-% spacing. Using the parskip package has already all the logic to avoid such
+% spacing as well. Using the parskip package has already all the logic to avoid such
 % alteration.
 % Note 2: When creating new space between paragraphs, do not use \newline which
 % generates an underful hbox badness 10000 and an horizontal empty box which
