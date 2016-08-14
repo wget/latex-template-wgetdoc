@@ -259,7 +259,7 @@
 % corresponding \l@... commands (controlling how the will be typeset in the ToC
 % if the tocdepth value is increased); also, the toclevel (for eventual
 % bookmarks) will have to be considered.
-% Src.: http://tex.stackexchange.com/a/60212/66964
+% src.: http://tex.stackexchange.com/a/60212/66964
 \titleclass{\subsubsubsection}{straight}[\subsection]
 \newcounter{subsubsubsection}[subsubsection]
 \renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
@@ -307,9 +307,9 @@
 %\renewcommand{\appendix}{\gdef\thechapter{\@Alph\c@chapter.}}
 
 % When no chapter is used, avoid to have section titles beginning with zeroes.
-% This condition breaks if you use 'article' since chapter is not defined is
+% This condition breaks if you use 'article' since chapter is not defined in
 % that class. The trailing dots are used because dots are missing at the end of
-% the numbering scheme made of exactly two numnber caracters in the table of
+% the numbering scheme made of exactly two number caracters in the table of
 % content.
 \renewcommand{\thesection}{%
     \ifnum\c@chapter<1
