@@ -68,33 +68,8 @@
 % Does make dashes in lists too big.
 \RequirePackage[french, german]{babel}
 
-\RequirePackage{translations}
-
-% Page <pageNumber> of <pageTotalNumber>
-\DeclareTranslationFallback{pageOfP-of-pages}
-{\pagename~\thepage~of~\zpageref{LastPage}}
-\DeclareTranslation{English}{pageOfPages}
-{\pagename~\thepage~of~\zpageref{LastPage}}
-\DeclareTranslation{Dutch}{pageOfPages}
-{\pagename~\thepage~op~\zpageref{LastPage}}
-\DeclareTranslation{French}{page-of-pages}
-{\pagename~\thepage~de~\zpageref{LastPage}}
-
-
-
-\ProvideTranslation{English}{fileListing}{File}
-\ProvideTranslation{Dutch}{fileListing}{Bestand}
-\ProvideTranslation{French}{fileListing}{Fichier}
-
-
-% Allow to have accentuated characters with XeLaTeX and LuaLaTeX. If you use
-% polyglossia, you can remove fontspec since polyglossia already loads that
-% package. No-math because of presence of MnSymbol without that option.
-\RequirePackage[no-math]{fontspec}
-% Use a font other than the default cmtt Computer Modern Typewriter which has
-% no boldfaced variant.
-% Read more at http://tex.stackexchange.com/a/27677/66964
-\setmonofont{Bitstream Vera Sans Mono}[Scale=MatchLowercase]
+% Used to detect the language used in our custom listing environments and in our footers to disable shorthands/autospacing accordingly. Cannot rely on \iflanguage by babel.
+\RequirePackage{iflang}
 
 % Polyglossia should be used when XeTeX/LuaTeX is used, but polyglossia has no
 % option to disable shortlands and spaces brought by French as French is not
@@ -104,6 +79,75 @@
 %\usepackage{polyglossia}
 %\setdefaultlanguage{french}
 %\setotherlanguage[babelshorthands=false]{dutch}
+% Polyglossia has also issues with lualatex, when defining languages and coming back to another the spaces are not restored: http://tex.stackexchange.com/q/186156/66964
+
+% Use the translations package instead of the LaTeX beamer "translator", because the latter has translations which can not be expanded.
+% src.: http://tex.stackexchange.com/a/193452/66964
+\RequirePackage{translations}
+
+% Page <pageNumber> of <pageTotalNumber>
+% \pagename contains the text used to represent the page which is "page" by default.
+% src.: http://ctan.cs.uu.nl/macros/latex/contrib/babel-contrib/french/frenchb.dtx
+% By default, English is used. If we want the translated version, if babel is used, the latter prefixes the command by the language name e.g.: \frenchpagename for French
+% src.: http://tex.stackexchange.com/a/82994/66964
+\DeclareTranslationFallback{pageOfPages}
+{\pagename~\thepage~of~\pageref{lastPage}}
+\DeclareTranslation{English}{pageOfPages}
+{\pagename~\thepage~of~\pageref{lastPage}}
+\DeclareTranslation{Dutch}{pageOfPages}
+{\pagename~\thepage~op~\pageref{lastPage}}
+\DeclareTranslation{French}{page-of-pages}
+{\pagename~\thepage~de~\pageref{lastPage}}
+
+\DeclareTranslationFallback{codeSnippet}
+{Code snippet}
+\DeclareTranslation{English}{codeSnippet}
+{Code snippet}
+\DeclareTranslation{Dutch}{codeSnippet}
+{Codefragment}
+\DeclareTranslation{French}{codeSnippet}
+{Extrait de code}
+
+\DeclareTranslationFallback{configFile}
+{Configuration file}
+\DeclareTranslation{English}{configFile}
+{Configuratie bestand}
+\DeclareTranslation{Dutch}{configFile}
+{Codefragment}
+\DeclareTranslation{French}{configFile}
+{Fichier de configuration}
+
+\ProvideTranslation{English}{fileListing}
+{File}
+\ProvideTranslation{Dutch}{fileListing}
+{Bestand}
+\ProvideTranslation{French}{fileListing}
+{Fichier}
+
+\ProvideTranslation{English}{author}
+{Author}
+\ProvideTranslation{Dutch}{author}
+{Auteur}
+\ProvideTranslation{French}{author}
+{Auteur}
+
+
+% Allow to have accentuated characters with XeLaTeX and LuaLaTeX. If you use
+% polyglossia, you can remove fontspec since polyglossia already loads that
+% package.
+% Complain that \math-dollar is already defined if the [no-math] option is missing
+% XeTeX
+\RequirePackage[no-math]{fontspec}
+
+% Use a font other than the default cmtt (Computer Modern Typewriter) which has
+% no boldfaced variant. src.: http://tex.stackexchange.com/a/27677/66964
+\setmonofont{Bitstream Vera Sans Mono}[Scale=MatchLowercase]
+
+% Sometimes elements from technical documentation are written in Chinese
+\RequirePackage{xeCJK}
+% require the font AR PL UMing CN to be installed. Package extra/ttf-arphic-uming on Arch Linux
+\setCJKmainfont{AR PL UMing CN}
+%\setCJKmainfont{SimSun}
 
 % Use quotes adapted to the language used, otherwise it fallbacks to American
 % English quotes. This is a requirement for biblatex and in order to use the
