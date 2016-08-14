@@ -161,14 +161,14 @@
 
 % Since commands like chapter (which is used in the table of content too) automatically switch to the plain style, we need to redefine it. See the section 7. of the fancyhdr manpages.
 \fancypagestyle{plain}{
-    \lhead{HEPL INPRES \thelastYear-\the\year}
-    \chead{Programmation orientée objet}
-    \rhead{William \textsc{Gathoye}}
+    \lhead{School year \thelastYear-\the\year}
+    \chead{Document name}
+    \rhead{Author name \textsc{Lastname}}
     
     % As babel is used in French here, and as in French colon are preceded by a space, babel adds a space even in hours. Use \NoAutoSpacing to avoid that.
     \lfoot{\NoAutoSpacing\today~\currenttime}
     \fancyfoot[LO,RE]{\today~\currenttime}
-    \fancyfoot[CO,CE]{2e Bachelier en Informatique et Systèmes}
+    \fancyfoot[CO,CE]{Center footer}
     
     % You can use a \ref{lastPage} at the end of the document avoiding the need of the lastpage package.
     \fancyfoot[RO,LE]{Page \thepage\ de \pageref{lastPage}}
@@ -193,7 +193,7 @@
 % The "to \textwidth" expression is similar to the first argument passed to tabularx environment. However, in this case, according to the tabu manual, it should speed up the algorithm convergence.
 \newenvironment{keyvalue}
 {%
-    \newcommand{\x}{\\[\normalbaselineskip]}%
+    \newcommand{\x}{\\[0.5\normalbaselineskip]}%
     \begin{longtabu} to \textwidth {X@{ : }X}%
     % Prevent the column and table widths to be discarded when there are only multicolumns in the table. Since this adds a new line, the colon we have manually defined is displayed too.
     \tabuphantomline
