@@ -354,24 +354,35 @@
     \renewcommand{\labelitemiv}{\filledtriangleright}
 }
 
+\RequirePackage{tcolorbox}
+    \tcbuselibrary{breakable}
+    \tcbuselibrary{skins}
+    \tcbuselibrary{listings}
+\RequirePackage{caption}
+
 % Use listing for raw data and code recognition, and wrap lines by default.
 % The UTF-8 version does not bring anything new. Using it without fontenc does
 % not produce compilation error with XeLaTeX, but does not display any
 % accentuated characters if fontspec is not specified.
-\RequirePackage{listings}
-\lstset{
-    % NoAutoSpacing prevents a space before colons to be added when the french
+% Already loaded with tcolorbox
+%\RequirePackage{listings}
+
+% Let's create style to inherit from in other custom environments based on listings. Indeed, we do not want copy paste always the same customization for each environments.
+\lstdefinestyle{custom}{
+    % iflanguage is a feature of babel, but not recommanded as it is based on the detection of hyphen rules and several languages can share the same rules, we have to use \iflanguagename from the iflang package instead.
+    % NoAutoSpacing is a feature of frenchb, a Babel language definition file for French, and prevents a space before colons to be added when the french
     % language is loaded with babel.
-    % Src.: http://tex.stackexchange.com/a/117767/66964
-    %basicstyle=\normalsize\ttfamily\NoAutoSpacing,
-    % Space separated columns are not properly aligned of columns is set to
+    % src.: http://tex.stackexchange.com/a/117767/66964
+    %       http://tex.stackexchange.com/a/200215/66964
+    basicstyle=\linespread{1}\normalsize\ttfamily\IfLanguageName{french}{\NoAutoSpacing}{},
+    % Space separated words are not properly aligned on next lines if `columns` statement is set to
     % flexible. Default is 'fixed'.
-    % columns=flexible,
-%    breaklines=true,
-%    breakautoindent=false,
-%    breakindent=0pt,
+    columns=fixed,
+    breaklines=true,
+    breakautoindent=false,
+    breakindent=0pt,
     % Sets default tabsize to 4 spaces
-%    tabsize=4,
+    tabsize=4,
     % Normally used to define delimiters in code listings like begin and end
     % keywords, but it has a side effect allowing linebreaks. We are thus gonna
     % use that ugly trick to force lstinline statements to break the line at
@@ -379,25 +390,43 @@
     % is an ugly hack because it has a side effect: the _ character becomes
     % a suitable breakpoint for both sides. This can create either foo_\n bar
     % or foo\n _bar, but this cannot be avoided.
-    %moredelim=[s]{_}{_}
+    %moredelim=[s]{_}{_},
+    % Put in bold words surrounded by @@
+    % [is] specifies the style.
+    % i: standing for "invisible", ask for the delimiters @@ to invisible in the rendered version
+    % s: standing for "string", ask for two delimiters, one starting the expression and the other closing the expression.
+    moredelim={[is][keywordstyle]{@@}{@@}}
 }
 
-% Add format rules for caption statements
-% Src.: http://tex.stackexchange.com/a/117538/66964
-\RequirePackage{caption}
-\DeclareCaptionFormat{code}{\rule{\dimexpr\textwidth\relax}{0.4pt}\par\vskip1pt#1#2#3}
-\captionsetup[code]{format=code}
+\lstset{
+    style=custom
+}
 
-% Add filename in dedicated lstlisting env
-% Does not work on the default \lstset.
-% taken from http://tex.stackexchange.com/a/262294
-\lstnewenvironment{code}[2][]{%
-    \lstset{%
-        numbers = left,
-        caption = #2,
-        #1,
-    }%
-}{}
+% Code environment. Does inherit from lstset settings thanks to style.
+\newtcblisting[auto counter]{code}[2][]{%
+    listing only,
+    breakable,
+    top=0.5pt,
+    bottom=0.5pt,
+    left=6mm,
+    sharp corners,
+    boxrule=0pt,
+    bottomrule=1pt,
+    toprule=1pt,
+    enhanced jigsaw,
+    listing options={
+        style=custom,
+        numbers=left,
+        numberstyle=\tiny,
+    },
+    lefttitle=0pt,
+    coltitle=black,
+    colbacktitle=white,
+    % Crashes on long lstlisting lines. \the\baselineskip reports 12.0pt. 1.2 * 12.0 = 14.4
+    %borderline north={1pt}{1.2\baselineskip}{dashed},
+    borderline north={1pt}{14.4pt}{dashed},
+    title={\GetTranslation{codeSnippet} \thetcbcounter:  #2},#1
+}
 
 \RequirePackage{epigraph}
 \setlength{\epigraphwidth}{0.5\paperwidth}
