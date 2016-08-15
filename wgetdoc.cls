@@ -605,41 +605,24 @@
 % SEC: Pagetitle and title
 %-------------------------------------------------------------------------------
 
-% If we use setkeys to define the keys from the argument of our environement,
-% and we call the defined keys at the exact location we need them, the function
-% linked to the key will be actually executed 2 times: at definition with
-% setkeys and when we call them. To prevent that, a solution is to define a
-% command that will contain the function of our key. By default, that command
-% will thus not be executed. We just need to call that command when we need
-% them.
 % This is what we do here. We define commands like \@wgetdoc@title@maintitle
 % that we need to call manually to execute their content.
-\define@key{title}{maintitle}{%
-    \def\@wgetdoc@title@maintitle{#1}%
+\newif\if@wgetdoc@title@ownpage
+\pgfkeys{
+    /wgetdoc/title/.cd,
+    maintitle/.store in=\@wgetdoc@title@maintitle,
+    subtitle/.store in=\@wgetdoc@title@subtitle,
+    author/.store in=\@wgetdoc@title@author,
+    filename/.store in=\@wgetdoc@title@filename,
+    ownpage/.is if=@wgetdoc@title@ownpage
 }
-
-\define@key{title}{subtitle}{%
-    \def\@wgetdoc@title@subtitle{#1}%
-}
-
-\define@key{title}{author}{%
-    \def\@wgetdoc@title@author{#1}%
-}
-
-\define@key{title}{filename}{%
-   \def\@wgetdoc@title@filename{#1}%
-}
-
-\define@boolkey{title}{ownpage}[true]{}
 
 \renewcommand{\title}[1][]{%
 
-    % Define the first argument of the command to be parsed as keys. There isn't
-    % any filtering restriction here wrt. the prefix and the family: all keys
-    % are thus taken into account. When the \setkeys command has a key=value as
-    % argument, the macro \prefix@family@keyName is defined, the value is
-    % assigned and the function is executed.
-    \setkeys{title}{#1}
+    % The following command is a shortcut and marginally quicker than
+    % \pgfkeys{/wgetdoc/title/.cd, #1}
+    % The command cannot end with the trailing / though.
+    \pgfqkeys{/wgetdoc/title}{#1}
     
     \@ifundefined{@wgetdoc@title@filename}{
 
@@ -647,22 +630,18 @@
             \ClassError{wgetdoc}{You did not specify a main title}{}
         }{}
 
-        % Do not use the following check. This macro allows just checking if a
-        % key is defined in a family from a list of families.
+        % Do not use the following check. This macro is only available in
+        % xkeyval and allows just checking if a key is defined in a family from
+        % a list of families.
         %\key@ifundefined{title}{maintitle}{NOT DEFINED}{DEFINED}
 
         \@ifundefined{@wgetdoc@title@maintitle}{
             \ClassError{wgetdoc}{You did not specify a main title}{}
         }{}
 
-        % Not needed as xkeyval checks if an equal sign is present (=). If absent 
-        % it complains with
-        %! Package xkeyval Error: no value specified for key `maintitle'.
-        %\ifdefempty{\@wget@title@maintitle}{EMPTY}{NOT EMPTY}
-
         % Check if maintitle is empty as it: maintitle=,subtitle=lorem
         % or maintitle={},subtitle=lorem
-        % No need to chek further as xkeyval is stripping white spaces and
+        % No need to chek further as pgfkeys trims white spaces and
         % checks performed either by \ifblank (etoolbox) or
         % \@ifmtarg (ifmtarg) are lost
         \ifx\@wgetdoc@title@maintitle\@empty
@@ -673,11 +652,10 @@
         \newcommand{\@wgetdoc@title@hrule}{\rule{\linewidth}{1mm}}
 
         % If this boolean key is absent of the title command, this will return
-        % false. If it is only present, it will return false too. To return true,
-        % the boolean value needs to be explicitely set explicitely on true. Any
+        % false. If it is only present, it will return true. Any
         % value other than 'true' or 'false' is non accepted and will make the
         % compilation crash.
-        \ifKV@title@ownpage%
+        \if@wgetdoc@title@ownpage
             \begin{titlepage}
                 \begin{center}
 
@@ -721,7 +699,7 @@
             \@wgetdoc@title@hrule%
         \fi
 
-    % If a filename has been defined for te title page and the file exists,
+    % If a filename has been defined for the title page and the file exists,
     % the file will be used as title page and others arguments in the \title
     % command will be discarded.
     }{
