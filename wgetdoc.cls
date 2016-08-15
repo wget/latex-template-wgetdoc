@@ -59,8 +59,15 @@
 \RequirePackage{pgfopts}
 \newif\if@wgetdoc@options@rectoverso
 \pgfkeys{
+    % Create our own directory (see it like a namespace) to avoid any clashes
+    % if another package was making use of it.  All subsequent keys in *the
+    % current call* of \pgfkeys only are automatically prefixed with this path,
+    % if necessary.
     /wgetdoc/options/.cd,
     languages/.value required,
+    % .store in only works when .code is not defined. A command key which
+    % simply stores its value into a macro can equivalently be defined using
+    % languages/.store in=\@wgetdoc@options@languagesTest,
     languages/.code={
         \typeout{The languages you specified are: #1}
         \if#1\@empty
@@ -100,7 +107,9 @@
 %-------------------------------------------------------------------------------
 % Require to have a package option loaded, otherwise complains with:
 % ! Package babel Error: You haven't specified a language option.
-% If we do not want to specify a language, the [base] option is the minimum required, but [base] does not load most of babel parts. We are not even able to check which languages have been loaded for example.
+% If we do not want to specify a language, the [base] option is the minimum
+% required, but [base] does not load most of babel parts. We are not even able
+% to check which languages have been loaded with \bbl@loaded for example.
 \@ifundefined{@wgetdoc@options@languages}{
     \ClassWarning{wgetdoc}{No main language specified. Defining English}
     \RequirePackage[english]{babel}
@@ -108,7 +117,9 @@
     \RequirePackage{babel}
 }
 
-% Used to detect the language used in our custom listing environments and in our footers to disable shorthands/autospacing accordingly. Cannot rely on \iflanguage by babel.
+% Used to detect the language used in our custom listing environments and in
+% our footers to disable shorthands/autospacing accordingly. Cannot rely on
+% \iflanguage by babel.
 \RequirePackage{iflang}
 
 % Polyglossia should be used when XeTeX/LuaTeX is used, but polyglossia has no
@@ -119,16 +130,21 @@
 %\usepackage{polyglossia}
 %\setdefaultlanguage{french}
 %\setotherlanguage[babelshorthands=false]{dutch}
-% Polyglossia has also issues with lualatex, when defining languages and coming back to another the spaces are not restored: http://tex.stackexchange.com/q/186156/66964
+% Polyglossia has also issues with lualatex, when defining languages and coming
+% back to another the spaces are not restored:
+% http://tex.stackexchange.com/q/186156/66964
 
-% Use the translations package instead of the LaTeX beamer "translator", because the latter has translations which can not be expanded.
+% Use the translations package instead of the LaTeX beamer "translator",
+% because the latter has translations which can not be expanded.
 % src.: http://tex.stackexchange.com/a/193452/66964
 \RequirePackage{translations}
 
 % Page <pageNumber> of <pageTotalNumber>
 % \pagename contains the text used to represent the page which is "page" by default.
 % src.: http://ctan.cs.uu.nl/macros/latex/contrib/babel-contrib/french/frenchb.dtx
-% By default, English is used. If we want the translated version, if babel is used, the latter prefixes the command by the language name e.g.: \frenchpagename for French
+% By default, English is used. If we want the translated version, if babel is
+% used, the latter prefixes the command by the language name e.g.:
+% \frenchpagename for French
 % src.: http://tex.stackexchange.com/a/82994/66964
 \DeclareTranslationFallback{pageOfPages}
 {\pagename~\thepage~of~\pageref{lastPage}}
@@ -174,9 +190,8 @@
 
 % Allow to have accentuated characters with XeLaTeX and LuaLaTeX. If you use
 % polyglossia, you can remove fontspec since polyglossia already loads that
-% package.
-% Complain that \math-dollar is already defined if the [no-math] option is missing
-% XeTeX
+% package. Complain that \math-dollar is already defined if the [no-math]
+% option is missing XeTeX
 \RequirePackage[no-math]{fontspec}
 
 % Use a font other than the default cmtt (Computer Modern Typewriter) which has
@@ -185,7 +200,8 @@
 
 % Sometimes elements from technical documentation are written in Chinese
 \RequirePackage{xeCJK}
-% require the font AR PL UMing CN to be installed. Package extra/ttf-arphic-uming on Arch Linux
+% require the font AR PL UMing CN to be installed. Package
+% extra/ttf-arphic-uming on Arch Linux
 \setCJKmainfont{AR PL UMing CN}
 %\setCJKmainfont{SimSun}
 
@@ -197,12 +213,13 @@
 %-------------------------------------------------------------------------------
 % SEC: Metrics
 %-------------------------------------------------------------------------------
-% Fix LaTeX incorrrect metrics and avoid overflow/underflow hbox warnings
-% activate={true,nocompatibility} - activate protrusion and expansion
-% final - enable microtype; use "draft" to disable
-% tracking=true, kerning=true, spacing=true - activate these techniques
-% factor=1100 - add 10% to the protrusion amount (default is 1000)
-% stretch=10, shrink=10 - reduce stretchability/shrinkability (default is 20/20)
+% Fix LaTeX incorrect metrics and avoid overflow/underflow hbox warnings
+% - activate={true,nocompatibility} - activate protrusion and expansion
+% - final - enable microtype; use "draft" to disable
+% - tracking=true, kerning=true, spacing=true - activate these techniques
+% - factor=1100 - add 10% to the protrusion amount (default is 1000)
+% - stretch=10
+% - shrink=10 - reduce stretchability/shrinkability (default is 20/20)
 %\RequirePackage[
 %activate={true,nocompatibility},
 %final,
@@ -220,30 +237,34 @@
     \RequirePackage[driver=pdftex,margin=2.5cm]{geometry}
 \else
     \RequirePackage[driver=dvips,margin=2.5cm]{geometry}
-% Pay attention at the double closing if. This is needed as we use nested if statements.
-% src.: http://tex.stackexchange.com/a/20780/66964
+% Pay attention at the double closing if. This is needed as we use nested if
+% statements.  src.: http://tex.stackexchange.com/a/20780/66964
 \fi\fi
 % Recommended for double sided
 %\RequirePackage[top=2.5cm, bottom=2.5cm, left=4cm, right=2cm]{geometry}
+%
 % Recommended for single sided
-%\RequirePackage[top=2.2cm, bottom=2.2cm, left=2cm, right=2cm]{geometry}
+% \RequirePackage[top=2.2cm, bottom=2.2cm, left=2cm, right=2cm]{geometry}
 
-% The default line spacing factor is 1. 1.3 which corresponds to \onehalfspacing with setspace.
-% like the \linespread command, linespace is still applied on the whole document, except footnotes and captions. setspace is now a native package as of LaTeX 2e and allows more fine-grained control over line spacing thanks to dedicated environments. We still need to apply a rule to all our listings environment as linespacing is still applied on them.
+% The default line spacing factor is 1. 1.3 which corresponds to
+% \onehalfspacing with setspace. Like the \linespread command, linespace is
+% still applied on the whole document, except footnotes and captions. setspace
+% is now a native package as of LaTeX 2e and allows more fine-grained control
+% over line spacing thanks to dedicated environments. We still need to apply
+% a rule to all our listings environment as linespacing is still applied on
+% them.
 % src.: https://en.wikibooks.org/wiki/LaTeX/Text_Formatting#Line_Spacing
 %       http://tex.stackexchange.com/a/200215/66964
-\RequirePackage{setspace}
-\onehalfspacing
+\RequirePackage{setspace} \onehalfspacing
 
 % Do not ask to adapt paragraph vertical spaces to make all page content of the
 % same hight.
 \raggedbottom
 
-% Disable the default alineas and add a space between all paragraphs.
-% Note 1: Do not try to change the values of \parskip and \parindent using
-% \setlength{} because this will change the table of contents and footnotes
-% spacing as well. Using the parskip package has already all the logic to avoid such
-% alteration.
+% Disable the default alineas and add a space between all paragraphs.  Note 1:
+% Do not try to change the values of \parskip and \parindent using \setlength{}
+% because this will change the table of contents and footnotes spacing as well.
+% Using the parskip package has already all the logic to avoid such alteration.
 % Note 2: When creating new space between paragraphs, do not use \newline which
 % generates an underful hbox badness 10000 and an horizontal empty box which
 % doesn't stretch. But use \bigskip instead which adds a vertical space command
@@ -400,6 +421,7 @@
     \tcbuselibrary{listings}
 \RequirePackage{caption}
 
+
 % Use listing for raw data and code recognition, and wrap lines by default.
 % The UTF-8 version does not bring anything new. Using it without fontenc does
 % not produce compilation error with XeLaTeX, but does not display any
@@ -407,16 +429,21 @@
 % Already loaded with tcolorbox
 %\RequirePackage{listings}
 
-% Let's create style to inherit from in other custom environments based on listings. Indeed, we do not want copy paste always the same customization for each environments.
+% Let's create style to inherit from in other custom environments based on
+% listings. Indeed, we do not want copy paste always the same customization for
+% each environments.
 \lstdefinestyle{custom}{
-    % iflanguage is a feature of babel, but not recommanded as it is based on the detection of hyphen rules and several languages can share the same rules, we have to use \iflanguagename from the iflang package instead.
-    % NoAutoSpacing is a feature of frenchb, a Babel language definition file for French, and prevents a space before colons to be added when the french
-    % language is loaded with babel.
+    % iflanguage is a feature of babel, but not recommanded as it is based on
+    % the detection of hyphen rules and several languages can share the same
+    % rules, we have to use \iflanguagename from the iflang package instead.
+    % NoAutoSpacing is a feature of frenchb, a Babel language definition file
+    % for French, and prevents a space before colons to be added when the
+    % french language is loaded with babel.
     % src.: http://tex.stackexchange.com/a/117767/66964
     %       http://tex.stackexchange.com/a/200215/66964
     basicstyle=\linespread{1}\normalsize\ttfamily\IfLanguageName{french}{\NoAutoSpacing}{},
-    % Space separated words are not properly aligned on next lines if `columns` statement is set to
-    % flexible. Default is 'fixed'.
+    % Space separated words are not properly aligned on next lines if `columns`
+    % statement is set to flexible. Default is 'fixed'.
     columns=fixed,
     breaklines=true,
     breakautoindent=false,
@@ -433,8 +460,10 @@
     %moredelim=[s]{_}{_},
     % Put in bold words surrounded by @@
     % [is] specifies the style.
-    % i: standing for "invisible", ask for the delimiters @@ to invisible in the rendered version
-    % s: standing for "string", ask for two delimiters, one starting the expression and the other closing the expression.
+    % i: standing for "invisible", ask for the delimiters @@ to invisible in
+    %    the rendered version
+    % s: standing for "string", ask for two delimiters, one starting the
+    %    expression and the other closing the expression.
     moredelim={[is][keywordstyle]{@@}{@@}}
 }
 
@@ -462,7 +491,8 @@
     lefttitle=0pt,
     coltitle=black,
     colbacktitle=white,
-    % Crashes on long lstlisting lines. \the\baselineskip reports 12.0pt. 1.2 * 12.0 = 14.4
+    % Crashes on long lstlisting lines. \the\baselineskip reports
+    % 12.0pt. 1.2 * 12.0 = 14.4
     %borderline north={1pt}{1.2\baselineskip}{dashed},
     borderline north={1pt}{14.4pt}{dashed},
     title={\GetTranslation{codeSnippet} \thetcbcounter:  #2},#1
