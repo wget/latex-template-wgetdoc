@@ -59,7 +59,7 @@
 \RequirePackage{pgfopts}
 \newif\if@wgetdoc@options@rectoverso
 \pgfkeys{
-    /wgetdoc/.cd,
+    /wgetdoc/options/.cd,
     languages/.value required,
     languages/.code={
         \typeout{The languages you specified are: #1}
@@ -73,8 +73,7 @@
     rectoverso/.is if=@wgetdoc@options@rectoverso
 }
 
-\ProcessPgfOptions{/wgetdoc}
-
+\ProcessPgfOptions{/wgetdoc/options}
 
 % As a reminder: the only difference between article and report is that article
 % has no chapter statement. 
