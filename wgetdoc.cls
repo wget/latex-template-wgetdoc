@@ -44,6 +44,14 @@
 %SEC: Template and options
 %-------------------------------------------------------------------------------
 
+% Hack in order to parse class keys which have several values
+% \documentclass[languages={english, french}]{wgetdoc}
+% src.: http://tex.stackexchange.com/a/322238/66964
+\let\oldin@\in@
+\def\zzz#1#2#{\oldin@{#2}{#1}\zzzb}
+\def\in@#1#2{\zzz{#2}#1{}\@nil}
+\def\zzzb#1\@nil{}
+
 % Needed to detect the TeX engine used. To have a generic code working for all
 % engines.
 \RequirePackage{iftex}
