@@ -839,6 +839,9 @@
 % inside the document environment scope.
 %\usepackage{layout}
 
+% For debug purpose. Show all packages (+version) used in your document.
+%\listfiles
+
 % For debug purpose. Show all fonts TeX is using in your file, so we can see at
 % which stage a font is being misinterpreted (ex. pdf conversion stage).
 %\showoutput
