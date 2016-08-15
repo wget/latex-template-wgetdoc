@@ -43,63 +43,41 @@
 %-------------------------------------------------------------------------------
 %SEC: Template and options
 %-------------------------------------------------------------------------------
+
 % Needed to detect the TeX engine used. To have a generic code working for all
 % engines.
 \RequirePackage{iftex}
 
-% Allow to have optional named arguments with a key=value style and removes the
-% limit of 9 args.
-% Key values like author=\textit{Me} used as options passed to classes are not
-% allowed by the LaTeX default kernel. The expression \textit{Me} will not be
-% processed. To allow such a syntax, xkeyval includes xkvltxp. Loading this
-% package before loading the class or package which uses xkeyval for option
-% processing will allow class and package options to contain expandable macros.
-%\RequirePackage{xkeyval}
-%
-\RequirePackage{keyval}
+\RequirePackage{pgfopts}
+\newif\if@wgetdoc@options@rectoverso
+\pgfkeys{
+    /wgetdoc/.cd,
+    languages/.value required,
+    languages/.code={
+        \typeout{The languages you specified are: #1}
+        \if#1\@empty
+            \ClassError{wgetdoc}{You did not specify a language. "languages" is empty. Aborting}{}
+        \fi
 
-\newif\iflanguagesdefined
-\newif\iflanguagedefined
-
-\define@key{wgetdoc@options}{languages}[english]{
-
-    \languagesdefinedtrue
-
-    \iflanguagedefined
-        \ClassError{wgetdoc}{A language has already been defined with the singular 'language' argument keyword}
-    \fi
-
-    \typeout{languages are #1}
-    \PassOptionsToPackage{#1}{babel}
-
+        \newcommand{\@wgetdoc@options@languages}{#1}
+        \PassOptionsToPackage{\@wgetdoc@options@languages}{babel}
+    },
+    rectoverso/.is if=@wgetdoc@options@rectoverso
 }
 
-
-\define@key{wgetdoc@options}{language}[english]{
-
-    \languagedefinedtrue
-
-    \iflanguagesdefined
-        \ClassError{wgetdoc}{Languages have already been defined with the plural 'languages' argument keyword}
-    \fi
- 
-    \typeout{language is #1}
-    \PassOptionsToPackage{#1}{babel}
- 
-}
-
-\define@key{wgetdoc@options}{onepage}[true]{\typeout{onepage is #1}}
-
-% keyval is great but does not offer a simple default value in \DeclareOptions,
-% has no ability to have a catch all feature for invalid options.
-\def\KV@errx#1{\ClassWarning{wgetdoc}{Unknown option ‘#1’. Discarded.}}
-
-\def\tmp{\setkeys{wgetdoc@options}}
-
-\expandafter\tmp\expandafter{\@classoptionslist}
+\ProcessPgfOptions{/wgetdoc}
 
 
-\LoadClass[twoside]{report}
+% As a reminder: the only difference between article and report is that article
+% has no chapter statement. 
+% Do not use \documentclass{report}, because \documentclass should only ever be
+% called once at the very beginning of your LaTeX document. Book does provide
+% single sided and double sided page options.
+\if@wgetdoc@options@rectoverso
+    \LoadClass[twoside]{report}
+\else
+    \LoadClass{report}
+\fi
 
 % As a reminder: the only difference between article and report is that article
 % has no chapter statement. 
@@ -122,12 +100,12 @@
 % Require to have a package option loaded, otherwise complains with:
 % ! Package babel Error: You haven't specified a language option.
 % If we do not want to specify a language, the [base] option is the minimum required, but [base] does not load most of babel parts. We are not even able to check which languages have been loaded for example.
-% \@ifundefined{@wgetdoc@options@languages}{
-%     \ClassWarning{wgetdoc}{No main language specified. Defining English}
-\RequirePackage{babel}
-% }{
-%     \RequirePackage{babel}
-% }
+\@ifundefined{@wgetdoc@options@languages}{
+    \ClassWarning{wgetdoc}{No main language specified. Defining English}
+    \RequirePackage[english]{babel}
+}{
+    \RequirePackage{babel}
+}
 
 % Used to detect the language used in our custom listing environments and in our footers to disable shorthands/autospacing accordingly. Cannot rely on \iflanguage by babel.
 \RequirePackage{iflang}
