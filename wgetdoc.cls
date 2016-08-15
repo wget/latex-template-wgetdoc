@@ -87,12 +87,6 @@
     \LoadClass{report}
 \fi
 
-% As a reminder: the only difference between article and report is that article
-% has no chapter statement. 
-% Do not use \documentclass{report}, because \documentclass should only ever be
-% called once at the very beginning of your LaTeX document. Book does provide
-% single sided and double sided page options.
-
 % Add the ability to compare macros with string values. The package is reported
 % to be weak and deprecated, while it appears to be maintained. etoolbox is
 % considered far superior and supersedes ifthen.
