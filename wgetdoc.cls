@@ -47,53 +47,58 @@
 % engines.
 \RequirePackage{iftex}
 
-\RequirePackage{xkeyval}
+% Allow to have optional named arguments with a key=value style and removes the
+% limit of 9 args.
+% Key values like author=\textit{Me} used as options passed to classes are not
+% allowed by the LaTeX default kernel. The expression \textit{Me} will not be
+% processed. To allow such a syntax, xkeyval includes xkvltxp. Loading this
+% package before loading the class or package which uses xkeyval for option
+% processing will allow class and package options to contain expandable macros.
+%\RequirePackage{xkeyval}
+%
+\RequirePackage{keyval}
+
 \newif\iflanguagesdefined
-\DeclareOptionX{languages}[english]{
-    \PassOptionsToPackage{#1}{babel}
+\newif\iflanguagedefined
+
+\define@key{wgetdoc@options}{languages}[english]{
+
+    \languagesdefinedtrue
+
     \iflanguagedefined
         \ClassError{wgetdoc}{A language has already been defined with the singular 'language' argument keyword}
     \fi
-    \languagesdefinedtrue    
+
+    \typeout{languages are #1}
+    \PassOptionsToPackage{#1}{babel}
+
 }
 
-\newif\iflanguagedefined
-\DeclareOptionX{language}[english]{
-    \PassOptionsToPackage{#1}{babel}
+
+\define@key{wgetdoc@options}{language}[english]{
+
+    \languagedefinedtrue
+
     \iflanguagesdefined
         \ClassError{wgetdoc}{Languages have already been defined with the plural 'languages' argument keyword}
     \fi
-    \languagedefinedtrue
+ 
+    \typeout{language is #1}
+    \PassOptionsToPackage{#1}{babel}
+ 
 }
 
-% Catchall class option. \OptionNotUsed exists to add the option to the list of
-% not used options. If not present, class options will be passed to all package
-% options. It is the version for xkeyval, the one for the LaTeX kernel is
-% \DeclareOption*
-\DeclareOptionX*{
-    \ClassWarning{wgetdoc}{Unknown option ‘\CurrentOption’. Discarded.}%
-}
+\define@key{wgetdoc@options}{onepage}[true]{\typeout{onepage is #1}}
 
-% Set the keyval keys. This is the equivalent of \setkeys but for class and package
-% options.
-%\ExecuteOptionsX{languages}
-
-
-
-% for xkeyval
-\ProcessOptionsX
-%for standard latex
-%\processoptions
-
-
-% \DeclareOptions and \ProcessOptions are defined in the LaTeX kernel itself.
-% These have no ability to define a default value.
-% xkeyval is bugy when a key has several values surrounded by { }.
-% \documentclass[languages={english, french}, onepage]{wgetdoc}
-% would have be impossible
 % keyval is great but does not offer a simple default value in \DeclareOptions,
 % has no ability to have a catch all feature for invalid options.
-%
+\def\KV@errx#1{\ClassWarning{wgetdoc}{Unknown option ‘#1’. Discarded.}}
+
+\def\tmp{\setkeys{wgetdoc@options}}
+
+\expandafter\tmp\expandafter{\@classoptionslist}
+
+
 \LoadClass[twoside]{report}
 
 % As a reminder: the only difference between article and report is that article
@@ -117,12 +122,12 @@
 % Require to have a package option loaded, otherwise complains with:
 % ! Package babel Error: You haven't specified a language option.
 % If we do not want to specify a language, the [base] option is the minimum required, but [base] does not load most of babel parts. We are not even able to check which languages have been loaded for example.
-\@ifundefined{@wgetdoc@options@languages}{
-    \ClassWarning{wgetdoc}{No main language specified. Defining English}
-    \RequirePackage[english]{babel}
-}{
-    \RequirePackage{babel}
-}
+% \@ifundefined{@wgetdoc@options@languages}{
+%     \ClassWarning{wgetdoc}{No main language specified. Defining English}
+\RequirePackage{babel}
+% }{
+%     \RequirePackage{babel}
+% }
 
 % Used to detect the language used in our custom listing environments and in our footers to disable shorthands/autospacing accordingly. Cannot rely on \iflanguage by babel.
 \RequirePackage{iflang}
