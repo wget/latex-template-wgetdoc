@@ -232,19 +232,41 @@
 
 % Margins and page paddings
 \ifXeTeX
-    \RequirePackage[driver=xetex,margin=2.5cm]{geometry}
+    \if@wgetdoc@options@rectoverso
+        \RequirePackage[driver=xetex,
+                        top=2.5cm,
+                        bottom=2.5cm,
+                        left=4cm,
+                        right=2cm]{geometry}
+    \else
+        \RequirePackage[driver=xetex,
+                        margin=2.5cm]{geometry}
+    \fi
 \else\ifPDFTeX
-    \RequirePackage[driver=pdftex,margin=2.5cm]{geometry}
+    \if@wgetdoc@options@rectoverso
+        \RequirePackage[driver=pdftex,
+                        top=2.5cm,
+                        bottom=2.5cm,
+                        left=4cm,
+                        right=2cm]{geometry}
+    \else
+        \RequirePackage[driver=pdftex,
+                        margin=2.5cm]{geometry}
+    \fi
 \else
-    \RequirePackage[driver=dvips,margin=2.5cm]{geometry}
+    \if@wgetdoc@options@rectoverso
+        \RequirePackage[driver=dvips,
+                        top=2.5cm,
+                        bottom=2.5cm,
+                        left=4cm,
+                        right=2cm]{geometry}
+    \else
+        \RequirePackage[driver=dvips,
+                        margin=2.5cm]{geometry}
+    \fi
 % Pay attention at the double closing if. This is needed as we use nested if
 % statements.  src.: http://tex.stackexchange.com/a/20780/66964
 \fi\fi
-% Recommended for double sided
-%\RequirePackage[top=2.5cm, bottom=2.5cm, left=4cm, right=2cm]{geometry}
-%
-% Recommended for single sided
-% \RequirePackage[top=2.2cm, bottom=2.2cm, left=2cm, right=2cm]{geometry}
 
 % The default line spacing factor is 1. 1.3 which corresponds to
 % \onehalfspacing with setspace. Like the \linespread command, linespace is
