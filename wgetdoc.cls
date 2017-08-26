@@ -152,8 +152,9 @@
 {\pagename~\thepage~of~\pageref{lastPage}}
 \DeclareTranslation{Dutch}{pageOfPages}
 {\pagename~\thepage~op~\pageref{lastPage}}
-\DeclareTranslation{French}{page-of-pages}
-{\pagename~\thepage~de~\pageref{lastPage}}
+% \pagename in French is not starting with a capital letter. Force it.
+\DeclareTranslation{French}{pageOfPages}
+{Page~\thepage~de~\pageref{lastPage}}
 
 \DeclareTranslationFallback{codeSnippet}
 {Code snippet}
