@@ -369,6 +369,11 @@
     \fi
 }
 
+% Compute the space used for the number alignment dynamically. Using the tocloft
+% package or defining our own tweak create other issues.
+% src.: https://tex.stackexchange.com/a/227183/66964
+\RequirePackage[tocindentauto]{tocstyle}
+
 % Remove heading dot and add a trailing dot in subsection titles and table of
 % content. In practise, change 2.1..2 to 2.1.2.
 \renewcommand{\thesubsection}{%
