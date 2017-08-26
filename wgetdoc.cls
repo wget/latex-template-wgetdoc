@@ -752,6 +752,9 @@
 % with \. Please pay attention this command is overriding command declared by
 % the url package like \DeclareUrlCommand.
 \RequirePackage{hyperref}
+% The bookmark package is needed because the bookmark handler from hyperref is buggy.
+% src.: https://tex.stackexchange.com/a/117271/66964
+\RequirePackage{bookmark}
 
 % Define a new command for filenames using url appearance. This command must be
 % defined after BibLaTeX.
