@@ -6,26 +6,6 @@
 \ProvidesClass{wgetdoc}[2016/08/15 William Gathoye's document class]
 
 %-------------------------------------------------------------------------------
-% This document needs to be compiled with xelatex or lualatex. In this regard,
-% all UTF-8 packages emulation have been removed.
-% Compilation:
-% $ xelatex <your tex filename.tex>
-% $ biber <your tex filename without extension>
-% $ xelatex <your tex filename>
-% $ xelatex <your tex filename>
-% $ <your pdf reader> <your tex filename.pdf>
-% You can use lualatex instead of xetex
-
-% If the compilation complains dependencies are not met, use the following
-% command to install the missing deps.
-% tlmgr search --global --file <name of file>
-%-------------------------------------------------------------------------------
-
-% Install extra/ttf-arphic-umin
-% tlmgr install mnsymbol
-% does not work with lualatex yet, because of japanese fonts.
-
-%-------------------------------------------------------------------------------
 % Always use \LoadClass and \RequirePackage instead of \input. If a package is
 % loaded with \input then it can be loaded more than once. Such an extra loading
 % may waste time and memory and it may produce strange results.
