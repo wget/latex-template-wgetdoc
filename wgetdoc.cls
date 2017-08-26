@@ -168,29 +168,6 @@
 \ProvideTranslation{French}{author}
 {Auteur}
 
-
-% Allow to have accentuated characters with XeLaTeX and LuaLaTeX. If you use
-% polyglossia, you can remove fontspec since polyglossia already loads that
-% package. Complain that \math-dollar is already defined if the [no-math]
-% option is missing XeTeX
-\RequirePackage[no-math]{fontspec}
-
-% Use a font other than the default cmtt (Computer Modern Typewriter) which has
-% no boldfaced variant. src.: http://tex.stackexchange.com/a/27677/66964
-\setmonofont{Bitstream Vera Sans Mono}[Scale=MatchLowercase]
-
-% Sometimes elements from technical documentation are written in Chinese
-\RequirePackage{xeCJK}
-% require the font AR PL UMing CN to be installed. Package
-% extra/ttf-arphic-uming on Arch Linux
-\setCJKmainfont{AR PL UMing CN}
-%\setCJKmainfont{SimSun}
-
-% Use quotes adapted to the language used, otherwise it fallbacks to American
-% English quotes. This is a requirement for biblatex and in order to use the
-% \enquote{text} command.
-\RequirePackage{csquotes}
-
 %-------------------------------------------------------------------------------
 % SEC: Metrics
 %-------------------------------------------------------------------------------
@@ -751,8 +728,30 @@
 \AtEndDocument{\label{lastPage}}
 
 %-------------------------------------------------------------------------------
-% SEC: Logos and additional characters
+% SEC: Global fonts and additional characters
 %-------------------------------------------------------------------------------
+% Switch to sans serif fonts.
+\renewcommand{\familydefault}{\sfdefault}
+
+% Allow to have accentuated characters with XeLaTeX and LuaLaTeX. If you use
+% polyglossia, you can remove fontspec since polyglossia already loads that
+% package. Complain that \math-dollar is already defined if the [no-math]
+% option is missing XeTeX
+\RequirePackage[no-math]{fontspec}
+
+% Use a font other than the default cmtt (Computer Modern Typewriter) which has
+% no boldfaced variant. src.: http://tex.stackexchange.com/a/27677/66964
+% \setmonofont{Bitstream Vera Sans Mono}[Scale=MatchLowercase]
+
+% Sometimes elements from technical documentation are written in
+% Chinese/Japonese/Korean.
+\RequirePackage{xeCJK}
+
+% Use quotes adapted to the language used, otherwise it fallbacks to American
+% English quotes. This is a requirement for biblatex and in order to use the
+% \enquote{text} command.
+\RequirePackage{csquotes}
+
 % Use special characters like a right oriented triangle. These are present in
 % the fonts from the American Mathematical Society.
 \RequirePackage{amssymb}
