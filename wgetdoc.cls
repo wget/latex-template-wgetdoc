@@ -325,7 +325,7 @@
 }
 
 %-------------------------------------------------------------------------------
-% SUBSEC: Support for subsubsubsection
+% SUBSEC: Underline below titles
 %-------------------------------------------------------------------------------
 
 % Add underlines below section titles. Don't try to get rid of titlesec.
@@ -335,40 +335,6 @@
 % not move into the next page, and avoid to make it indented.
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}[{\titlerule[0.8pt]}]
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}[{\titlerule[0.8pt]}]
-
-% Define a fresh new sectional unit below \subsubsection, but above \paragraph
-% does require to do considerably more work: a new counter has to be created
-% and its representation has to be appropriately defined; the sectional units
-% \paragraph and \subparagraph will also have to be redefined, as well as they
-% corresponding \l@... commands (controlling how the will be typeset in the ToC
-% if the tocdepth value is increased); also, the toclevel (for eventual
-% bookmarks) will have to be considered.
-% src.: http://tex.stackexchange.com/a/60212/66964
-\titleclass{\subsubsubsection}{straight}[\subsection]
-\newcounter{subsubsubsection}[subsubsection]
-\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
-% optional; useful if paragraphs are to be numbered
-\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}}
-\titleformat{\subsubsubsection}
-{\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
-\titlespacing*{\subsubsubsection}
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
-\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
-   {3.25ex \@plus1ex \@minus.2ex}%
-   {-1em}%
-   {\normalfont\normalsize\bfseries}}
-\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
-   {3.25ex \@plus1ex \@minus .2ex}%
-   {-1em}%
-   {\normalfont\normalsize\bfseries}}
-\def\toclevel@subsubsubsection{4}
-\def\toclevel@paragraph{5}
-\def\toclevel@paragraph{6}
-\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
-\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
-\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
-\setcounter{secnumdepth}{4}
 
 %-------------------------------------------------------------------------------
 % SUBSEC: Dots in numbering
@@ -411,11 +377,6 @@
 \renewcommand{\thesubsubsection}{
     \thesection\@arabic\c@subsection.%
     \@arabic\c@subsubsection.%
-}
-\renewcommand{\thesubsubsubsection}{%
-    \thesection\@arabic\c@subsection.%
-    \@arabic\c@subsubsection.%
-    \@arabic\c@subsubsubsection.%
 }
 
 %-------------------------------------------------------------------------------
