@@ -844,3 +844,12 @@
 % For debug purpose. Show all fonts TeX is using in your file, so we can see at
 % which stage a font is being misinterpreted (ex. pdf conversion stage).
 %\showoutput
+
+% Trace in log file the if branches taken. Not part of default TeX (texdoc
+% texbytopic), but part of e-Tex which is used by expl3 and packages like
+% fontspec. Even if we do not define that tacing command we see statements like
+% {\ifx: (level 1) entered on line 747}
+% {\else: \ifx (level 1) entered on line 747}
+% {\fi: \ifx (level 1) entered on line 747}
+% in the .log file.
+% \tracingifs=1
