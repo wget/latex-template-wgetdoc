@@ -504,11 +504,7 @@
 %-------------------------------------------------------------------------------
 % SUB: Headers and footers
 %-------------------------------------------------------------------------------
-\RequirePackage{datetime}
-\newdateformat{ddFullMonthyyyy}{\THEDAY \monthname[\THEMONTH] \THEYEAR}
-% Using the hh:mm:ss format does not take seconds into account. They seem to
-% remain at 00.
-%\settimeformat{hhmmsstime}
+\RequirePackage{datetime2}
 
 % Define a counter for last year at the time of the document compilation
 \newcounter{lastYear}
@@ -518,67 +514,192 @@
 % Define headers and footers
 \RequirePackage{fancyhdr}
 
-% Define author command
-\def\@firstname{}
-\def\@lastname{}
-\def\@email{}
-\define@key{author}{firstname}{%
-    \def\@author{%
-        {#1}%
-    }%
+\newcommand{\@wgetdoc@header@leftvalue}{}
+\newcommand{\@wgetdoc@header@centervalue}{}
+\newcommand{\@wgetdoc@header@rightvalue}{}
+\newcommand{\@wgetdoc@footer@leftvalue}{}
+\newcommand{\@wgetdoc@footer@centervalue}{}
+\newcommand{\@wgetdoc@footer@rightvalue}{}
+
+% See self-defined conditionals
+% src.: https://en.wikibooks.org/wiki/LaTeX/Plain_TeX#Self_defined_conditionals
+\newif\if@wgetdoc@header@rectoverso
+\newif\if@wgetdoc@header@default
+\newif\if@wgetdoc@header@line
+\newif\if@wgetdoc@footer@rectoverso
+\newif\if@wgetdoc@footer@default
+\newif\if@wgetdoc@footer@line
+\pgfkeys{
+    /wgetdoc/header/.cd,
+    left/.store in=\@wgetdoc@header@left,
+    center/.store in=\@wgetdoc@header@center,
+    right/.store in=\@wgetdoc@header@right,
+    rectoverso/.is if=@wgetdoc@header@rectoverso,
+    default/.is if=@wgetdoc@header@default,
+    line/.is if=@wgetdoc@header@line
+}
+\pgfkeys{
+    /wgetdoc/footer/.cd,
+    left/.store in=\@wgetdoc@footer@left,
+    center/.store in=\@wgetdoc@footer@center,
+    right/.store in=\@wgetdoc@footer@right,
+    rectoverso/.is if=@wgetdoc@footer@rectoverso,
+    default/.is if=@wgetdoc@footer@default,
+    line/.is if=@wgetdoc@footer@line
 }
 
-\define@key{author}{lastname}{%
-    \def\@author{%
-        {\@author #1}%
-    }%
+\newcommand{\header}[1][]{%
+    \pgfqkeys{/wgetdoc/header}{#1}
+    \@ifundefined{@wgetdoc@header@left}{
+        \typeout{HEADER LEFT UNDEFINED IN ASSIGN!!!!}
+    }{
+        \typeout{HEADER LEFT DEFINED IN ASSIGN!!!!}
+    }
 }
 
-\define@key{author}{email}{%
-    \def\@author{%
-        {}%
-    }%
+\newcommand{\footer}[1][]{%
+    \pgfqkeys{/wgetdoc/footer}{#1}
 }
 
 % Since commands like chapter (which is used in the table of content too)
 % automatically switch to the plain style, we need to redefine it. See the
 % section 7. of the fancyhdr manpages.
 \fancypagestyle{plain}{
-    \lhead{School name \thelastYear-\the\year}
-    \chead{Document name}
-    \rhead{Author name \textsc{Lastname}}
-    
-    % As babel=ere, and as in French colon are preceded by a space, babel adds
-    % a space even in hours. Use \NoAutoSpacing to avoid that.
-    % Left field in footer
-%    \lfoot{\NoAutoSpacing\today~\currenttime}
-  %  \lfoot{27 mai 2015 13:47}
-    
-    
-    
-    % Left and odd (1,3,...) + right and even (2,4,...) pages
-    \fancyfoot[LO,RE]{\today~\currenttime\NoAutoSpacing}
-    
-    % Center and odd (1,3,...) + center and even (2,4,...) pages
-    \fancyfoot[CO,CE]{School section year and name}
+    % Clear all header and footer fields
+    \fancyhf{}
 
-    
-    % You can use a \ref{lastPage} at the end of the document avoiding the need
-    % of the lastpage package.
-   % \ifx\footerRight\undefined
-  %  \else
-        \fancyfoot[RO,LE]{Page \thepage\ de \pageref{lastPage}}
-%        \fancyfoot[RO,LE]{\footerRight}
-   % \fi
+    % \fancyhead[C]{My great header}
+            % \fancyhead[OL]{\IfLanguageName{french}{\NoAutoSpacing}{}Left}
+            % \fancyhead[OR]{\IfLanguageName{french}{\NoAutoSpacing}{}Right}
+            % \fancyhead[EL]{\IfLanguageName{french}{\NoAutoSpacing}{}Right}
+            % \fancyhead[ER]{\IfLanguageName{french}{\NoAutoSpacing}{}Left}
 
-    % Redefine height of header and footer lines.
-    \renewcommand{\headrulewidth}{0.4pt}
-    \renewcommand{\footrulewidth}{0.4pt}
+    % A command is defined when \def or \newcommand is used.
+    % By default it is simply \@empty when checked with \ifx
+    % Using newcommand or renew command will never be equal to \@empty as these macros are long
+
+    \@ifundefined{@wgetdoc@header@left}{
+    % %     \typeout{HEADER LEFT UNDEFINED IN FANCY PAGE!!!!}
+    % %
+    % % }{
+    % %     \typeout{HEADER LEFT DEFINED IN FANCY PAGE!!!!}
+    % % }
+    % % \ifx\@wgetdoc@header@left\@empty
+    %
+        \typeout{&=& &=& &=& &=& &=& &=& &=& &=& &=& &=& &=& =>  DEBUG}
+        % If header left not defined, check if the user wants to apply default
+        % values if these do exist.
+        \if@wgetdoc@header@default
+            \@ifundefined{@wgetdoc@title@maintitle}{}{
+                \renewcommand{\@wgetdoc@header@leftvalue}{\@wgetdoc@title@maintitle}
+            }
+        \fi
+    % \else
+    }{
+        \renewcommand{\@wgetdoc@header@leftvalue}{\@wgetdoc@header@left}
+    }
+    % \fi
+
+    \@ifundefined{@wgetdoc@header@center}{
+        \if@wgetdoc@header@default
+            \@ifundefined{@wgetdoc@title@subtitle}{}{
+                \renewcommand{\@wgetdoc@header@centervalue}{\@wgetdoc@title@subtitle}
+            }
+        \fi
+    }{
+        \renewcommand{\@wgetdoc@header@centervalue}{\@wgetdoc@header@center}
+    }
+    \@ifundefined{@wgetdoc@header@center}{
+        \if@wgetdoc@header@default
+            \@ifundefined{@wgetdoc@title@subtitle}{}{
+                \renewcommand{\@wgetdoc@header@centervalue}{\@wgetdoc@title@subtitle}
+            }
+        \fi
+    }{
+        \renewcommand{\@wgetdoc@header@centervalue}{\@wgetdoc@header@center}
+    }
+
+    \@ifundefined{@wgetdoc@header@right}{
+        \if@wgetdoc@header@default
+            \@ifundefined{@wgetdoc@title@author}{}{
+                \renewcommand{\@wgetdoc@header@rightvalue}{\@wgetdoc@title@author}
+            }
+        \fi
+    }{
+        \renewcommand{\@wgetdoc@header@rightvalue}{\@wgetdoc@header@right}
+    }
+
+    % See self-defined conditionals (defined above)
+    % src.: https://en.wikibooks.org/wiki/LaTeX/Plain_TeX#Self_defined_conditionals
+    \if@wgetdoc@options@rectoverso
+        \if@wgetdoc@header@rectoverso
+            \typeout{DEBUG:                     RECTO VERSO ALLOWED HEADER!!!}
+            % Language shorthands are automatically enabled when using babel. As in
+            % French, colons are preceded by a space, babel adds a space even in
+            % hours.  Use \NoAutoSpacing to avoid that.
+            % 'OL' stands for odd (1,3,...) and left fields.
+            % 'ER' stands for even (2,4,...) and right fields.
+            \fancyhead[OL,ER]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@header@leftvalue}
+            \fancyhead[OR,EL]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@header@rightvalue}
+        \fi
+    \else
+        \fancyhead[L]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@header@leftvalue}
+        \fancyhead[R]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@header@rightvalue}
+    \fi
+    \fancyhead[C]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@header@centervalue}
+
+    \@ifundefined{@wgetdoc@footer@left}{
+        % Define date and time as the default value for the footer left field.
+        \renewcommand{\@wgetdoc@footer@leftvalue}{\IfLanguageName{french}{\NoAutoSpacing}{}\DTMnow}
+    }{
+        \renewcommand{\@wgetdoc@footer@leftvalue}{\@wgetdoc@footer@left}
+    }
+
+    \@ifundefined{@wgetdoc@footer@center}{
+        % Define last year and current year as the default value for the footer
+        % center field.
+        \renewcommand{\@wgetdoc@footer@centervalue}{\thelastYear-\the\year}
+    }{
+        \renewcommand{\@wgetdoc@footer@centervalue}{\@wgetdoc@footer@center}
+    }
+
+    \@ifundefined{@wgetdoc@footer@right}{
+        % Define translated page numbers as the default value for the footer
+        % right fields.
+        \renewcommand{\@wgetdoc@footer@rightvalue}{\GetTranslation{pageOfPages}}
+    }{
+        \renewcommand{\@wgetdoc@footer@rightvalue}{\@wgetdoc@footer@right}
+    }
+
+    \if@wgetdoc@footer@rectoverso
+        \fancyfoot[OL]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@leftvalue}
+        \fancyfoot[EL]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@rightvalue}
+        \fancyfoot[OR]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@rightvalue}
+        \fancyfoot[ER]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@leftvalue}
+    \else
+        \fancyfoot[L]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@leftvalue}
+        \fancyfoot[R]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@rightvalue}
+    \fi
+    \fancyfoot[C]{\IfLanguageName{french}{\NoAutoSpacing}{}\@wgetdoc@footer@centervalue}
+
+
+    % Redefine height of header and footer lines. Set it to 0pt to remote these
+    % line completely.
+    \if@wgetdoc@header@line
+        \renewcommand{\headrulewidth}{0.4pt}
+    \else
+        \renewcommand{\headrulewidth}{0pt}
+    \fi
+
+    \if@wgetdoc@footer@line
+        \renewcommand{\footrulewidth}{0.4pt}
+    \else
+        \renewcommand{\footrulewidth}{0pt}
+    \fi
 }
-\pagestyle{plain}
 
 %-------------------------------------------------------------------------------
-% SEC: Pagetitle and title
+% SEC: Pagetitle and main title
 %-------------------------------------------------------------------------------
 
 % This is what we do here. We define commands like \@wgetdoc@title@maintitle
@@ -586,38 +707,30 @@
 \newif\if@wgetdoc@title@ownpage
 \pgfkeys{
     /wgetdoc/title/.cd,
+    % maintitle/.code={\ifx#1\@empty\else\edef\@wgetdoc@title@maintitle{#1}\fi},
     maintitle/.store in=\@wgetdoc@title@maintitle,
+    maintitle/.value required,
     subtitle/.store in=\@wgetdoc@title@subtitle,
     author/.store in=\@wgetdoc@title@author,
     filename/.store in=\@wgetdoc@title@filename,
     ownpage/.is if=@wgetdoc@title@ownpage
 }
 
-\renewcommand{\title}[1][]{%
+\newcommand{\@wgetdoc@title}{%
 
-    % The following command is a shortcut and marginally quicker than
-    % \pgfkeys{/wgetdoc/title/.cd, #1}
-    % The command cannot end with the trailing / though.
-    \pgfqkeys{/wgetdoc/title}{#1}
-    
+
     \@ifundefined{@wgetdoc@title@filename}{
-
-        \@ifundefined{@wgetdoc@title@maintitle}{
-            \ClassError{wgetdoc}{You did not specify a main title}{}
-        }{}
 
         % Do not use the following check. This macro is only available in
         % xkeyval and allows just checking if a key is defined in a family from
         % a list of families.
-        %\key@ifundefined{title}{maintitle}{NOT DEFINED}{DEFINED}
-
         \@ifundefined{@wgetdoc@title@maintitle}{
             \ClassError{wgetdoc}{You did not specify a main title}{}
         }{}
 
         % Check if maintitle is empty as it: maintitle=,subtitle=lorem
         % or maintitle={},subtitle=lorem
-        % No need to chek further as pgfkeys trims white spaces and
+        % No need to check further as pgfkeys trims white spaces and
         % checks performed either by \ifblank (etoolbox) or
         % \@ifmtarg (ifmtarg) are lost
         \ifx\@wgetdoc@title@maintitle\@empty
@@ -686,6 +799,17 @@
             \ClassError{wgetdoc}{You specified \@wgetdoc@title@filename as filename for the page title, but it could not be found.}{}
         }
     }
+}
+
+\renewcommand{\title}[1][]{%
+    % The following command is a shortcut and marginally quicker than
+    % \pgfkeys{/wgetdoc/title/.cd, #1}
+    % The command cannot end with the trailing / though.
+    \pgfqkeys{/wgetdoc/title}{#1}
+    \@wgetdoc@title%
+    % Defining here the page style for titles is needed.
+    % src.: https://tex.stackexchange.com/a/388655/66964
+    \pagestyle{plain}
 }
 
 %-------------------------------------------------------------------------------
