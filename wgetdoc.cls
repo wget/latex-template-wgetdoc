@@ -16,7 +16,7 @@
 % src.: http://tex.stackexchange.com/q/6240/66964
 % makeatletter and makeatother are thus unneeded in class files.
 
-% Use LaTeX commands as much as possible as their are more robust than their
+% Use LaTeX commands as much as possible as they are more robust than their
 % TeX counterparts.
 %-------------------------------------------------------------------------------
 
@@ -256,7 +256,6 @@
 %-------------------------------------------------------------------------------
 % SEC: Title management
 %-------------------------------------------------------------------------------
-\RequirePackage{titlesec}
 
 %-------------------------------------------------------------------------------
 % SUBSEC: Custom chapter style
@@ -290,6 +289,7 @@
 % the syntax is completely different from \titlerule. titlesec takes care of
 % the following issue: making sure the rule which creates a new paragraph will
 % not move into the next page, and avoid to make it indented.
+\RequirePackage{titlesec}
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}[{\titlerule[0.8pt]}]
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}[{\titlerule[0.8pt]}]
 
@@ -320,9 +320,9 @@
 % content.
 \renewcommand{\thesection}{%
     \ifnum\c@chapter<1
-    \arabic{section}.%
+        \arabic{section}.%
     \else
-    \thechapter\arabic{section}.%
+        \thechapter\arabic{section}.%
     \fi
 }
 
@@ -367,7 +367,6 @@
     \tcbuselibrary{listings}
 \RequirePackage{caption}
 
-
 % Use listing for raw data and code recognition, and wrap lines by default.
 % The UTF-8 version does not bring anything new. Using it without fontenc does
 % not produce compilation error with XeLaTeX, but does not display any
@@ -379,7 +378,7 @@
 % listings. Indeed, we do not want copy paste always the same customization for
 % each environments.
 \lstdefinestyle{custom}{
-    % iflanguage is a feature of babel, but not recommanded as it is based on
+    % iflanguage is a feature of babel, but not recommended as it is based on
     % the detection of hyphen rules and several languages can share the same
     % rules, we have to use \iflanguagename from the iflang package instead.
     % NoAutoSpacing is a feature of frenchb, a Babel language definition file
@@ -550,11 +549,6 @@
 
 \newcommand{\header}[1][]{%
     \pgfqkeys{/wgetdoc/header}{#1}
-    \@ifundefined{@wgetdoc@header@left}{
-        \typeout{HEADER LEFT UNDEFINED IN ASSIGN!!!!}
-    }{
-        \typeout{HEADER LEFT DEFINED IN ASSIGN!!!!}
-    }
 }
 
 \newcommand{\footer}[1][]{%
@@ -568,25 +562,11 @@
     % Clear all header and footer fields
     \fancyhf{}
 
-    % \fancyhead[C]{My great header}
-            % \fancyhead[OL]{\IfLanguageName{french}{\NoAutoSpacing}{}Left}
-            % \fancyhead[OR]{\IfLanguageName{french}{\NoAutoSpacing}{}Right}
-            % \fancyhead[EL]{\IfLanguageName{french}{\NoAutoSpacing}{}Right}
-            % \fancyhead[ER]{\IfLanguageName{french}{\NoAutoSpacing}{}Left}
-
     % A command is defined when \def or \newcommand is used.
     % By default it is simply \@empty when checked with \ifx
-    % Using newcommand or renew command will never be equal to \@empty as these macros are long
-
+    % Using newcommand or renewcommand will never be equal to \@empty as these
+    % macros are long.
     \@ifundefined{@wgetdoc@header@left}{
-    % %     \typeout{HEADER LEFT UNDEFINED IN FANCY PAGE!!!!}
-    % %
-    % % }{
-    % %     \typeout{HEADER LEFT DEFINED IN FANCY PAGE!!!!}
-    % % }
-    % % \ifx\@wgetdoc@header@left\@empty
-    %
-        \typeout{&=& &=& &=& &=& &=& &=& &=& &=& &=& &=& &=& =>  DEBUG}
         % If header left not defined, check if the user wants to apply default
         % values if these do exist.
         \if@wgetdoc@header@default
@@ -594,11 +574,9 @@
                 \renewcommand{\@wgetdoc@header@leftvalue}{\@wgetdoc@title@maintitle}
             }
         \fi
-    % \else
     }{
         \renewcommand{\@wgetdoc@header@leftvalue}{\@wgetdoc@header@left}
     }
-    % \fi
 
     \@ifundefined{@wgetdoc@header@center}{
         \if@wgetdoc@header@default
@@ -633,7 +611,6 @@
     % src.: https://en.wikibooks.org/wiki/LaTeX/Plain_TeX#Self_defined_conditionals
     \if@wgetdoc@options@rectoverso
         \if@wgetdoc@header@rectoverso
-            \typeout{DEBUG:                     RECTO VERSO ALLOWED HEADER!!!}
             % Language shorthands are automatically enabled when using babel. As in
             % French, colons are preceded by a space, babel adds a space even in
             % hours.  Use \NoAutoSpacing to avoid that.
@@ -707,7 +684,6 @@
 \newif\if@wgetdoc@title@ownpage
 \pgfkeys{
     /wgetdoc/title/.cd,
-    % maintitle/.code={\ifx#1\@empty\else\edef\@wgetdoc@title@maintitle{#1}\fi},
     maintitle/.store in=\@wgetdoc@title@maintitle,
     maintitle/.value required,
     subtitle/.store in=\@wgetdoc@title@subtitle,
@@ -717,10 +693,7 @@
 }
 
 \newcommand{\@wgetdoc@title}{%
-
-
     \@ifundefined{@wgetdoc@title@filename}{
-
         % Do not use the following check. This macro is only available in
         % xkeyval and allows just checking if a key is defined in a family from
         % a list of families.
@@ -801,6 +774,11 @@
     }
 }
 
+% Please pay attention. The implicit convention for LaTeX class developer is to
+% use our own command to define the title and not redefine the existing title
+% command. In the future, if this is causing issues, please change your API and
+% use a custom title.
+% https://tex.stackexchange.com/q/388592#comment967020_388655/66964
 \renewcommand{\title}[1][]{%
     % The following command is a shortcut and marginally quicker than
     % \pgfkeys{/wgetdoc/title/.cd, #1}
@@ -874,7 +852,10 @@
 % Use quotes adapted to the language used, otherwise it fallbacks to American
 % English quotes. This is a requirement for biblatex and in order to use the
 % \enquote{text} command.
-\RequirePackage{csquotes}
+% autostyle is used to change the rendering automatically depending on the
+% language used in the section.
+% src.: https://tex.stackexchange.com/a/154394/66964
+\RequirePackage[autostyle=true]{csquotes}
 
 % Use special characters like a right oriented triangle. These are present in
 % the fonts from the American Mathematical Society.
@@ -956,3 +937,4 @@
 % {\fi: \ifx (level 1) entered on line 747}
 % in the .log file.
 % \tracingifs=1
+%
