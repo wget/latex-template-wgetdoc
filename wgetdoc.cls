@@ -20,8 +20,7 @@
 % TeX counterparts.
 %-------------------------------------------------------------------------------
 
-%-------------------------------------------------------------------------------
-%SEC: Template and options
+%%fakechapter Template and options
 %-------------------------------------------------------------------------------
 
 % Hack in order to parse class keys which have several values
@@ -82,8 +81,7 @@
 %\RequirePackage{ifmtarg}
 \RequirePackage{etoolbox}
 
-%-------------------------------------------------------------------------------
-%SEC: Languages and translations
+%%fakechapter Languages and translations
 %-------------------------------------------------------------------------------
 % Require to have a package option loaded, otherwise complains with:
 % ! Package babel Error: You haven't specified a language option.
@@ -168,8 +166,7 @@
 \ProvideTranslation{French}{author}
 {Auteur}
 
-%-------------------------------------------------------------------------------
-% SEC: Metrics
+%%fakechapter Metrics
 %-------------------------------------------------------------------------------
 % Fix LaTeX incorrect metrics and avoid overflow/underflow hbox warnings
 % - activate={true,nocompatibility} - activate protrusion and expansion
@@ -253,12 +250,10 @@
 % For better reading, this should be the optimized space between paragraphs:
 %\setlength{\parskip}{0.5cm}
 
-%-------------------------------------------------------------------------------
-% SEC: Title management
+%%fakechapter Title management
 %-------------------------------------------------------------------------------
 
-%-------------------------------------------------------------------------------
-% SUBSEC: Custom chapter style
+%%fakesection Custom chapter style
 %-------------------------------------------------------------------------------
 \def\thickhrulefill{\leavevmode \leaders \hrule height 1.2ex \hfill \kern \z@}
 \def\@makechapterhead#1{
@@ -280,8 +275,7 @@
     }
 }
 
-%-------------------------------------------------------------------------------
-% SUBSEC: Underline below titles
+%%fakesection Underline below titles
 %-------------------------------------------------------------------------------
 
 % Add underlines below section titles. Don't try to get rid of titlesec.
@@ -293,8 +287,7 @@
 \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}[{\titlerule[0.8pt]}]
 \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}[{\titlerule[0.8pt]}]
 
-%-------------------------------------------------------------------------------
-% SUBSEC: Dots in numbering
+%%fakesection Dots in numbering
 %-------------------------------------------------------------------------------
 
 % Force trailing dot to appear in table of content and (sub) sections numbering
@@ -341,8 +334,7 @@
     \@arabic\c@subsubsection.%
 }
 
-%-------------------------------------------------------------------------------
-% SUB: Custom environments
+%%fakesection Custom environments
 %-------------------------------------------------------------------------------
 
 % Package to customize enumeration. Allow to continue numbering scheme in
@@ -500,8 +492,7 @@
     \includegraphics[valign=b,height=\fontcharht\font`X]{#1}
 }
 
-%-------------------------------------------------------------------------------
-% SUB: Headers and footers
+%%fakesection Headers and footers
 %-------------------------------------------------------------------------------
 \RequirePackage{datetime2}
 
@@ -675,8 +666,7 @@
     \fi
 }
 
-%-------------------------------------------------------------------------------
-% SEC: Pagetitle and main title
+%%fakechapter Page title and main title
 %-------------------------------------------------------------------------------
 
 % This is what we do here. We define commands like \@wgetdoc@title@maintitle
@@ -790,8 +780,7 @@
     \pagestyle{plain}
 }
 
-%-------------------------------------------------------------------------------
-% SEC: Links management
+%%fakechapter Links management
 %-------------------------------------------------------------------------------
 % Add extra support for links.
 % Even if hyperref implicitly loads the url package, it passes the default
@@ -829,8 +818,7 @@
 % Used to count the number of page.
 \AtEndDocument{\label{lastPage}}
 
-%-------------------------------------------------------------------------------
-% SEC: Global fonts and additional characters
+%%fakechapter Global fonts and additional characters
 %-------------------------------------------------------------------------------
 % Switch to sans serif fonts.
 \renewcommand{\familydefault}{\sfdefault}
@@ -915,8 +903,7 @@
 
 \renewmenumacro{\menu}[>]{menu}
 
-%-------------------------------------------------------------------------------
-% SEC: Debug
+%%fakechapter Debug
 %-------------------------------------------------------------------------------
 % For debug purpose. Only needed if you want to print the layout with \layout
 % inside the document environment scope.
