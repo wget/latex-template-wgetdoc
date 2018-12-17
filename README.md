@@ -26,27 +26,6 @@ Indeed, if the compilation complains dependencies are not met, you will have to 
 
 You should know [these commands](https://en.wikibooks.org/wiki/LaTeX/Installation#Installing_LaTeX) if you installed a LaTeX distribution in a minimal way.
 
-## Fix your packages
-
-As of September 2017, there is currently a bug in the xeCJK module, but hopefully, [there is a fix](https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1536714.html).
-
-Open the file `xeCJK-listings.sty` located at the following location:
-
-* On Arch Linux: `/usr/share/texmf-dist/tex/xelatex/xecjk/xeCJK-listings.sty`
-* On Debian: `/usr/share/texlive/texmf-dist/tex/xelatex/xecjk/xeCJK-listings.sty`
-
-and add the statement `\bool_new:N \l__xeCJK_listings_letter_bool` in order to obtain the following result:
-
-```
-    \lst@Append #2
-  }
-\bool_new:N \l__xeCJK_listings_letter_bool
-\cs_new_protected_nopar:Npn \__xeCJK_listings_process_letter:nN
-  {
-    \lst@whitespacefalse
-    \bool_if:NTF \l__xeCJK_listings_letter_bool
-```
-
 ## Usage
 
 ### Create a document based on this class
