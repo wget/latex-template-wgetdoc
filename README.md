@@ -28,7 +28,7 @@ You should know [these commands](https://en.wikibooks.org/wiki/LaTeX/Installatio
 
 ## Usage
 
-### Create a document based on this class
+### Create a document based on this class
 
 Here is a minimal working example. The file `wgetdoc.cls` must reside alongside your TeX file. Symlinks are supported.
 
@@ -102,10 +102,18 @@ clean:
 
 To launch a compilation, specify the `file` variable to your TeX file without precising its `.tex` extension:
 
-    # 	make file=my_documentation_file
+    $ make file=my_documentation_file
 
 This will compile the document 3 times and compile your bibliography database if any. If you do not need this, simply use the argument `simple` which only makes one pass.
 
 To clean the files created by the compilation process, you can safely run the same type of command. Do not worry, the rm command asks each time if you want to remove the file or not.
 
-    # 	make clean file=my_documentation_file
+    $ make clean file=my_documentation_file
+
+# Contributing
+
+If you have comments to make, issues to raise or push requests to submit, feel free to contribute to this repository. By contributing, you accept that your changes may be licensed under the following license terms.
+
+# License
+
+This "software" is licensed under the terms of the MIT license.
